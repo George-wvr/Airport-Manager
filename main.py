@@ -47,7 +47,9 @@ flip_small_fnt = pygame.font.Font("Skyfont.ttf",20)
 #Variables
 page = "start"
 frame_count = 0
-time_multiplier = 2
+time_multiplier = 1
+mouse_down = False
+mouse_up = False
 
 if swidth < 1200 or sheight < 600:
     page = "not_supported"
@@ -134,8 +136,11 @@ class Button():
             return False
         
     def clicked(self):
-        if pygame.mouse.get_pressed()[0]== True and self.hover() == True:
+        global mouse_up, mouse_down
+        if mouse_down == True and mouse_up == True and self.hover() == True:
             self.do_action()
+            mouse_down = False
+            mouse_up = False
 
     def do_action(self):
         global page, time_multiplier
@@ -156,7 +161,7 @@ class Menu_cloud():
         self.image = pygame.image.load(image_name)
         self.image = pygame.transform.scale(self.image,(self.width,self.height))
         self.x = random.randint((-self.width-10),(swidth))
-        self.y = random.randint(10,(sheight/2)-100)
+        self.y = random.randint(10,(int(sheight/2))-100)
         self.active = True
         if self.x <= -self.width:
             self.active = False
@@ -172,7 +177,7 @@ class Menu_cloud():
         if self.x > swidth:
             self.active = False
             self.x = -self.width
-            self.y = random.randint(10,(sheight/2)-100)
+            self.y = random.randint(10,(int(sheight/2))-100)
         else:
             self.x += 1
 
@@ -245,7 +250,25 @@ tmu_btn = Button((swidth-250),20, 10, 15,"+",blue, flip_col, None, None, None, "
 
 tmd_btn = Button((swidth-250),40, 10, 15,"-",blue, flip_col, None, None, None, "small", "tmd")
 
-game_buttons = [lda_btn,tut_btn,set_btn,ext_btn,cdt_btn,tmu_btn,tmd_btn]
+game_buttons = [lda_btn,tut_btn,set_btn,ext_btn,cdt_btn]
+
+    #Schedual Screen
+        #Buttons
+lda_btn = Button(60,30, 100, 65, "Home", white, flip_col, None, None, None, "medium", "sta")
+
+set_btn = Button(240,30, 200, 65,"Contracts",white, flip_col, None, None, None, "medium", "con")
+
+tut_btn = Button(470,30, 200, 65,"Upgrades", white, flip_col, None, None, None, "medium", "upg")
+
+ext_btn = Button(690,30, 200, 65,"Dashboard",red, flip_col, None, None, None, "medium", "lda")
+
+cdt_btn = Button((swidth-60),30, 200, 65,"help",blue, flip_col, None, None, None, "medium", "ext")
+
+tmu_btn = Button((swidth-250),20, 10, 15,"+",blue, flip_col, None, None, None, "small", "tmu")
+
+tmd_btn = Button((swidth-250),40, 10, 15,"-",blue, flip_col, None, None, None, "small", "tmd")
+
+schedual_buttons = [lda_btn,tut_btn,set_btn,ext_btn,cdt_btn]
 
 while True:
     displaysurf.fill(background)
@@ -300,7 +323,7 @@ while True:
             button.hover()
             button.clicked()
 
-        game_time_read = time.localtime(game_time)
+        game_time_read = time.localtime(time.time())
         hr = time.strftime("%H",game_time_read)
         min = time.strftime("%M",game_time_read)
         sec = time.strftime("%S",game_time_read)
@@ -314,6 +337,15 @@ while True:
         text = "X"+str(time_multiplier)
         render_text(generate_flip_small_txt(text,red),"topright",swidth-218,10)
         increment_time()
+
+    elif page == "schedual":
+        head = pygame.surface.Surface((swidth,60))
+        head.fill(black)
+        displaysurf.blit(head,(0,0))
+        for button in schedual_buttons:
+            button.draw()
+            button.hover()
+            button.clicked()
     
     elif page == "not_supported":
         render_text(generate_flip_big_txt("Your screen is too small",white),"center",swidth/2,sheight/2-100)

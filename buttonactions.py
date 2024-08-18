@@ -16,5 +16,7 @@ def actions(action):
         return "load"
     elif action == "sta":
         return "start"
+    if action == "sch":
+        return "schedual"
     else:
         return none()
