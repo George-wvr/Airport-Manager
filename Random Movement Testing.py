@@ -26,6 +26,7 @@ class Traveler():
         self.route = ["door1 outside", "door1 inside", "check in", "security", "gate"]
         self.x_pos = 575
         self.y_pos = 580
+        self.queue_pos = None
     
     def draw(self):
         pygame.draw.circle(displaysurf, self.get_colour(self.colour),(self.x_pos,self.y_pos), 10)
@@ -61,6 +62,11 @@ def get_target_position(target_name):
         return 540,550
     if target_name == "door1 inside":
         return 540, 500
+    if target_name == "check in":
+        for desk in all_checkin_desks:
+            if desk.full == False:
+                
+
     else:
         return random.randint(0,1000), random.randint(0,600)
     
@@ -70,6 +76,9 @@ class Checkin_desk():
         self.y_pos = 400
         self.width = 200
         self.height = 50
+        self.queue = []
+        self.full = False
+
 
     def draw(self):
         pygame.draw.rect(displaysurf, checkin_colour, (self.x_pos, self.y_pos, self.width, self.height))
